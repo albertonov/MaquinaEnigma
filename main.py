@@ -4,20 +4,21 @@
 
 
 
-def caminoIda(letra, clave1, clave2, clave3):
-
-    letra ="A"
-    clave1=0
-    clave2=0
-    clave3=0
-
-
-    clave3 +=1
-
+def caminoIda(letra, c1, c2, c3):
     alfabeto=["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
     rotor3 = ["B", "D", "F", "H", "J", "L", "C", "P", "R", "T", "X", "V", "Z", "N", "Y", "E", "I", "W", "G", "A", "K", "M", "U", "S", "Q", "O"]
     rotor2 = ["A", "J", "D", "K", "S", "I", "R", "U", "X", "B", "L", "H", "W", "T", "M", "C", "Q", "G", "Z", "N", "P", "Y", "F", "V", "O", "E"]
     rotor1 = ["E", "K", "M", "F", "L", "G", "D", "Q", "V", "Z", "N", "T", "O", "W", "Y", "H", "X", "U", "S", "P", "A", "I", "B", "R", "C", "J"]
+    reflecor=["Y", "R", "U", "H", "Q", "S", "L", "D", "P", "X", "N", "G", "O", "K", "M", "I", "E", "B", "F", "Z", "C", "W", "V", "J", "A", "T"]
+
+
+    clave1= getNumero(c1,alfabeto)
+    clave2= getNumero(c2,alfabeto)
+    clave3= getNumero(c3,alfabeto)
+
+
+    clave3 +=1
+
 
     #del input al tercer rotor
     a = getNumero(letra, alfabeto)                  #r18
@@ -43,15 +44,8 @@ def caminoIda(letra, clave1, clave2, clave3):
 
     offset1 = getOffset(clave1,l1)
 
-    print(alfabeto[c])
-    print(rotor3[c])
-    print(offset3)
-    print(alfabeto[d])
-    print(rotor2[d])
-    print(offset2)
-    print(alfabeto[f])
-    print(rotor1[f])
-    print(offset1)
+
+    print(alfabeto[offset1]+"->REFLECTOR"+"->"+reflecor[offset1])
 
 def getNumero(letra,alf):
     numero = 0
@@ -77,4 +71,4 @@ def getOffset(clave, letra):
 
 if __name__ == '__main__':
 
-    caminoIda(1,1,1,1)
+    caminoIda("R","R","K","C")
