@@ -1,7 +1,5 @@
-
-
-
-
+import random
+import string
 
 
 def cifrarLetra(letra, c1, c2, c3):
@@ -45,14 +43,32 @@ def cifrarLetra(letra, c1, c2, c3):
     offset1 = getOffset(clave1,l1)
 
 
-    print(alfabeto[offset1]+"->REFLECTOR"+"->"+reflecor[offset1])
+    #print(alfabeto[offset1]+"->REFLECTOR"+"->"+reflecor[offset1])
 
-    h = getNumero(reflecor[offset1], alfabeto) +clave1
+    h = (getNumero(reflecor[offset1], alfabeto) +clave1)%26
 
 
     a = getNumero(alfabeto[h], rotor1)
-    print(rotor1[a] +"->"+alfabeto[a])
-    
+    #print(rotor1[a] +"->"+alfabeto[a])
+
+    offset2 = clave2-clave1
+    if (offset2 <0):
+        offset2 = offset2 + 26
+    b = (a + offset2)%26
+    c = getNumero(alfabeto[b], rotor2)
+    #print(rotor2[c] + "->" + alfabeto[c])
+
+    offset3 = clave3-clave2
+    if(offset3<0):
+        offset3 = offset3 +26
+    d = (c + offset3)%26
+    e = getNumero(alfabeto[d], rotor3)
+    #print(rotor3[e] + "->" + alfabeto[e])
+
+    offsetOutput = getOffset(clave3, alfabeto[e])
+
+    salida = alfabeto[offsetOutput]
+    print(letra + "->" + salida)
 
 def getNumero(letra,alf):
     numero = 0
@@ -78,4 +94,11 @@ def getOffset(clave, letra):
 
 if __name__ == '__main__':
 
-    cifrarLetra("Y","N","L","S")
+    for x in range(6):
+        letra = random.choice(string.ascii_letters).upper()
+        c1 = random.choice(string.ascii_letters).upper()
+        c2 = random.choice(string.ascii_letters).upper()
+        c3 = random.choice(string.ascii_letters).upper()
+        print(letra+c1+c2+c3)
+        cifrarLetra(letra,c1,c2,c3)
+        print("------------")
