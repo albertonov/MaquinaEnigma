@@ -2,11 +2,8 @@ import random
 import string
 
 
-def cifrarLetra(letra, c1, c2, c3):
+def cifrarLetra(letra, c1, c2, c3, rotor3, rotor2, rotor1):
     alfabeto=["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
-    rotor3 = ["B", "D", "F", "H", "J", "L", "C", "P", "R", "T", "X", "V", "Z", "N", "Y", "E", "I", "W", "G", "A", "K", "M", "U", "S", "Q", "O"] #INF
-    rotor2 = ["A", "J", "D", "K", "S", "I", "R", "U", "X", "B", "L", "H", "W", "T", "M", "C", "Q", "G", "Z", "N", "P", "Y", "F", "V", "O", "E"]
-    rotor1 = ["E", "K", "M", "F", "L", "G", "D", "Q", "V", "Z", "N", "T", "O", "W", "Y", "H", "X", "U", "S", "P", "A", "I", "B", "R", "C", "J"]
     reflecor=["Y", "R", "U", "H", "Q", "S", "L", "D", "P", "X", "N", "G", "O", "K", "M", "I", "E", "B", "F", "Z", "C", "W", "V", "J", "A", "T"]
 
 
@@ -68,7 +65,7 @@ def cifrarLetra(letra, c1, c2, c3):
     offsetOutput = getOffset(clave3, alfabeto[e])
 
     salida = alfabeto[offsetOutput]
-    print(letra + "->" + salida)
+    return salida
 
 def getNumero(letra,alf):
     numero = 0
@@ -92,13 +89,47 @@ def getOffset(clave, letra):
             aux += 1
     return offset
 
+def nextLetra(c1):
+    alfabeto = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U",
+               "V", "W", "X", "Y", "Z"]
+    aux = getNumero(c1, alfabeto)
+    return alfabeto[(aux+1)%26]
 if __name__ == '__main__':
+    rotor3 = ["B", "D", "F", "H", "J", "L", "C", "P", "R", "T", "X", "V", "Z", "N", "Y", "E", "I", "W", "G", "A", "K", "M", "U", "S", "Q", "O"] #INF
+    rotor2 = ["A", "J", "D", "K", "S", "I", "R", "U", "X", "B", "L", "H", "W", "T", "M", "C", "Q", "G", "Z", "N", "P", "Y", "F", "V", "O", "E"]
+    rotor1 = ["E", "K", "M", "F", "L", "G", "D", "Q", "V", "Z", "N", "T", "O", "W", "Y", "H", "X", "U", "S", "P", "A", "I", "B", "R", "C", "J"]
 
-    for x in range(6):
-        letra = random.choice(string.ascii_letters).upper()
-        c1 = random.choice(string.ascii_letters).upper()
-        c2 = random.choice(string.ascii_letters).upper()
-        c3 = random.choice(string.ascii_letters).upper()
-        print(letra+c1+c2+c3)
-        cifrarLetra(letra,c1,c2,c3)
-        print("------------")
+
+
+    cadena = "LOREMIPSUMDOLORSITAMETCONSECTETURADIPISCIELITSEDEIUSMODTEMPORINCIDUNTUTLABOREETDOLOREMAGNAALIQUAUTENIMADMINIMVENIAMQUISNOSTRUMEXERCITATIONEMULLAMCORPORISSUSCIPITLABORIOSAMNISIUTALIQUIDEXEACOMMODICONSEQUATUR"
+
+
+    c1 = "O"
+    c2 = "D"
+    c3 = "L"
+    resultado = []
+    doblepaso = False
+    for letra in cadena:
+        if (doblepaso):
+            c1 = "O"
+        cifrado = cifrarLetra(letra, c1,c2,c3,rotor3,rotor2,rotor1)
+        resultado.append(cifrado)
+
+        c3 = nextLetra(c3)
+        if (doblepaso):
+            c2 = nextLetra(c2)
+            doblepaso = False
+            c1 = nextLetra(c1)
+        if(c3 == "V"):
+            c2 = nextLetra(c2)
+            if (c2=="E"):
+                doblepaso = True
+
+
+
+
+
+    print(cadena)
+    print(''.join(resultado))
+    print(c1 + c2 + c3)
+
