@@ -1,8 +1,7 @@
-import random
-import string
+from Rotor import Rotor
 
 
-def cifrarLetra(letra, c1, c2, c3, rotor3, rotor2, rotor1):
+def cifrarLetra(letra, c1, c2, c3, rotor1, rotor2, rotor3):
     alfabeto=["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
     reflecor=["Y", "R", "U", "H", "Q", "S", "L", "D", "P", "X", "N", "G", "O", "K", "M", "I", "E", "B", "F", "Z", "C", "W", "V", "J", "A", "T"]
 
@@ -39,14 +38,9 @@ def cifrarLetra(letra, c1, c2, c3, rotor3, rotor2, rotor1):
 
     offset1 = getOffset(clave1,l1)
 
-
-    #print(alfabeto[offset1]+"->REFLECTOR"+"->"+reflecor[offset1])
-
     h = (getNumero(reflecor[offset1], alfabeto) +clave1)%26
 
-
     a = getNumero(alfabeto[h], rotor1)
-    #print(rotor1[a] +"->"+alfabeto[a])
 
     offset2 = clave2-clave1
     if (offset2 <0):
@@ -66,7 +60,7 @@ def cifrarLetra(letra, c1, c2, c3, rotor3, rotor2, rotor1):
 
     salida = alfabeto[offsetOutput]
     return salida
-
+#Funcion auxiliar que devuelve el numero de una letra en el abecedario
 def getNumero(letra,alf):
     numero = 0
     for element in alf:
@@ -74,7 +68,7 @@ def getNumero(letra,alf):
             return numero
         numero +=1
     return -1
-
+#Funcion auxiliar que calcula el desplazamiento que existe entre una clave y una letra dadas
 def getOffset(clave, letra):
     alfabeto = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U",
                 "V", "W", "X", "Y", "Z"]
@@ -89,45 +83,48 @@ def getOffset(clave, letra):
             aux += 1
     return offset
 
-def nextLetra(c1):
-    alfabeto = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U",
-               "V", "W", "X", "Y", "Z"]
-    aux = getNumero(c1, alfabeto)
-    return alfabeto[(aux+1)%26]
+
 if __name__ == '__main__':
-    rotor3 = ["B", "D", "F", "H", "J", "L", "C", "P", "R", "T", "X", "V", "Z", "N", "Y", "E", "I", "W", "G", "A", "K", "M", "U", "S", "Q", "O"] #INF
-    rotor2 = ["A", "J", "D", "K", "S", "I", "R", "U", "X", "B", "L", "H", "W", "T", "M", "C", "Q", "G", "Z", "N", "P", "Y", "F", "V", "O", "E"]
-    rotor1 = ["E", "K", "M", "F", "L", "G", "D", "Q", "V", "Z", "N", "T", "O", "W", "Y", "H", "X", "U", "S", "P", "A", "I", "B", "R", "C", "J"]
+
+    numeroRotorI = int(input("¿Que rotor ira en el lado izquierdo? (1, 2, 3): "))
+    c1 = input("Introduce la clave rotor izquierda: ")
+    rotorI = Rotor(numeroRotorI, c1)
 
 
+    numeroRotorC = int(input("¿Que rotor ira en el lado central? (1, 2, 3): "))
+    c2 = input("Introduce la clave rotor central: ")
+    rotorC = Rotor(numeroRotorC, c2)
 
-    cadena = "LOREMIPSUMDOLORSITAMETCONSECTETURADIPISCIELITSEDEIUSMODTEMPORINCIDUNTUTLABOREETDOLOREMAGNAALIQUAUTENIMADMINIMVENIAMQUISNOSTRUMEXERCITATIONEMULLAMCORPORISSUSCIPITLABORIOSAMNISIUTALIQUIDEXEACOMMODICONSEQUATURQUISAUTEIUREREPREHENDERITINVOLUPTATEVELITESSECILLUMDOLOREEUFUGIATNULLAPARIATUREXCEPTEURSINTOBCAECATCUPIDITATNONPROIDENTSUNTINCULPAQUIOFFICIADESERUNTMOLLITANIMIDESTLABORUM"
+    numeroRotorD = int(input("¿Que rotor ira en el lado derecho? (1, 2, 3): "))
+    c3 = input("Introduce la clave rotor derecho: ")
+    rotorD = Rotor(numeroRotorD, c3)
 
+    cadena = input("Introduce una cadena de texto: ")
 
-    c1 = "O"
-    c2 = "D"
-    c3 = "L"
+    #Cifrado de letras
     resultado = []
     doblepaso = False
+    if (rotorC.clave ==rotorC.claveDesplazamiento):
+        doblepaso = True
     for letra in cadena:
-        cifrado = cifrarLetra(letra, c1,c2,c3,rotor3,rotor2,rotor1)
+        cifrado = cifrarLetra(letra, rotorI.clave,rotorC.clave,rotorD.clave,rotorI.alfabetorotor, rotorC.alfabetorotor,rotorD.alfabetorotor)
         resultado.append(cifrado)
 
-        c3 = nextLetra(c3)
+        rotorD.nextLetra()
         if (doblepaso):
-            c2 = nextLetra(c2)
+            rotorC.nextLetra()
             doblepaso = False
-            c1 = nextLetra(c1)
-        if(c3 == "V"):
-            c2 = nextLetra(c2)
-            if (c2=="E"):
+            rotorI.nextLetra()
+        if(rotorD.clave == rotorD.claveDesplazamiento):
+            rotorC.nextLetra()
+            if (rotorC.clave==rotorC.claveDesplazamiento):
                 doblepaso = True
 
 
 
 
 
-    print(cadena)
-    print(''.join(resultado))
-    print("Valor de las claves: "+c1 + c2 + c3)
+    print("Original: " + cadena)
+    print("Cifrado: "+''.join(resultado))
+    print("Nuevo Valor de las claves: "+rotorI.clave + rotorC.clave + rotorD.clave)
 
