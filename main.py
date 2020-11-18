@@ -1,6 +1,40 @@
 from Rotor import Rotor
+import time
+############################## FUNCIONES AUXILIARES ##############################
 
+#Funcion auxiliar que devuelve el numero de una letra en el abecedario
+def getNumero(letra,alf):
+    numero = 0
+    for element in alf:
+        if element == letra:
+            return numero
+        numero +=1
+    return -1
+#Funcion auxiliar que calcula el desplazamiento que existe entre una clave y una letra dadas
+def getOffset(clave, letra):
+    alfabeto = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U",
+                "V", "W", "X", "Y", "Z"]
+    encontrado = False
+    offset = 0
+    aux = clave
+    while(not encontrado):
+        if letra == alfabeto[aux%26]:
+            encontrado = True
+        else:
+            offset += 1
+            aux += 1
+    return offset
 
+#Funcion comprueba si la letra pasada esta modificada por el clavijero y lo intercambia con su par
+def checkLetraInClavijero(letra, listaLetrasClavija, listaTuplasClavijero):
+    if (letra in listaLetrasClavija):
+        for tupla in listaTuplasClavijero:
+            if letra in tupla:
+                if letra == tupla[0]:
+                    letra = tupla[1]
+                else:
+                    letra = tupla [0]
+    return letra
 def cifrarLetra(letra, rotorI, rotorC, rotorD, listaLetrasClavija, listaTuplasClavijero):
     alfabeto=["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
     reflecor=["Y", "R", "U", "H", "Q", "S", "L", "D", "P", "X", "N", "G", "O", "K", "M", "I", "E", "B", "F", "Z", "C", "W", "V", "J", "A", "T"]
@@ -15,20 +49,15 @@ def cifrarLetra(letra, rotorI, rotorC, rotorD, listaLetrasClavija, listaTuplasCl
     clave2= getNumero(rotorC.clave,alfabeto)
     clave3= getNumero(rotorD.clave,alfabeto)
 
-
-
     #CLAVIJERO ENTRADA
     inputChar = checkLetraInClavijero(inputChar, listaLetrasClavija, listaTuplasClavijero)
 
 
-
-
-
     #del input al tercer rotor
     clave3 += 1
-    a = getNumero(inputChar, alfabeto)                  #r18
-    b = getNumero(alfabeto[clave3-1], alfabeto)     #c3
-    c = (a+b+1)%26                                  #21u
+    a = getNumero(inputChar, alfabeto)
+    b = getNumero(alfabeto[clave3-1], alfabeto)
+    c = (a+b+1)%26
     l3= rotor3[c]
 
     #calculamos ofset tercer roto
@@ -68,45 +97,14 @@ def cifrarLetra(letra, rotorI, rotorC, rotorD, listaLetrasClavija, listaTuplasCl
 
     salida = alfabeto[offsetOutput]
 
+    # CLAVIJERO SALIDA
     salida = checkLetraInClavijero(salida, listaLetrasClavija, listaTuplasClavijero)
-
-    #CLAVIJERO SALIDA
     return salida
-#Funcion auxiliar que devuelve el numero de una letra en el abecedario
-def getNumero(letra,alf):
-    numero = 0
-    for element in alf:
-        if element == letra:
-            return numero
-        numero +=1
-    return -1
-#Funcion auxiliar que calcula el desplazamiento que existe entre una clave y una letra dadas
-def getOffset(clave, letra):
-    alfabeto = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U",
-                "V", "W", "X", "Y", "Z"]
-    encontrado = False
-    offset = 0
-    aux = clave
-    while(not encontrado):
-        if letra == alfabeto[aux%26]:
-            encontrado = True
-        else:
-            offset += 1
-            aux += 1
-    return offset
 
-def checkLetraInClavijero(letra, listaLetrasClavija, listaTuplasClavijero):
-    if (letra in listaLetrasClavija):
-        for tupla in listaTuplasClavijero:
-            if letra in tupla:
-                if letra == tupla[0]:
-                    letra = tupla[1]
-                else:
-                    letra = tupla [0]
-    return letra
 
 
 if __name__ == '__main__':
+
     ##################### INTRODUCCION DE DATOS #################################
     numeroRotorI = int(input("¿Que rotor ira en el lado izquierdo? (1, 2, 3): "))
     c1 = input("Introduce la clave rotor izquierda (Letra): ")
@@ -126,6 +124,7 @@ if __name__ == '__main__':
     listaTuplasClavijero = []
     while(not clavijaSalida):
         entrada = input("Clavijero: Introduce dos letras separadas por un guion (A-B). (ESC para terminar de introducir): ")
+        entrada = entrada.upper()
         if entrada == "ESC":
             clavijaSalida = True
         else:
@@ -140,14 +139,12 @@ if __name__ == '__main__':
                 a = 0
 
     cadena = input("Introduce una cadena de texto: ")
-
-
-
-
+    cadena = cadena.upper()
 
     ##################### CIFRADO DE LETRAS #################################
     resultado = []
     doblepaso = False
+    start = time.time()
     if (rotorC.clave ==rotorC.claveDesplazamiento):
         doblepaso = True
     for letra in cadena:
@@ -163,7 +160,11 @@ if __name__ == '__main__':
             if (rotorC.clave==rotorC.claveDesplazamiento):
                 doblepaso = True
 
+    end = time.time()
+    #DEVOLVEMOS LA SOLUCION Y EL VALOR DE LAS CLAVES AL FINALIZAR EL PROBLEMA
     print("Original: " + cadena)
     print("Cifrado: "+''.join(resultado))
     print("Nuevo Valor de las claves: "+rotorI.clave + rotorC.clave + rotorD.clave)
 
+
+    print(f"Runtime of the program is {end - start} seconds")
